@@ -23,18 +23,19 @@ Host:		Device:
 
 
 Port 1	Leonardo	Port 2	Leonardo
-1	15/PB1		1	2/PD1
-2	16/PB2		2	RXI/PD2
-3	14/PB3		3	TX0/PD3
-4	8/PB4		4	4/PD4
-5*	A3/PF4		5*	A1/PF6
-6*	5/PC6		6*	7/PE6
-7	VCC		7	VCC
-8	GND		8	GND
-9*	A2/PF5		9*	A0/PF7
+1	15/PB1		1	2/PD1		white
+2	16/PB2		2	RXI/PD2		gray
+3	14/PB3		3	TX0/PD3		violet
+4	8/PB4		4	4/PD4		blue
+5*	A3/PF4		5*	A1/PF6		orange
+6*	5/PC6		6*	7/PE6		green
+7	VCC		7	VCC		red
+8	GND		8	GND		brown
+9*	A2/PF5		9*	A0/PF7		yellow
 
 Free:
-3/PD0
-6/PD7
-9/PB5	START P1
-10/PB6
+GND	grey
+3/PD0	violet
+6/PD7	blue
+9/PB5	white	P1_START
+10/PB6	red	P2_START
