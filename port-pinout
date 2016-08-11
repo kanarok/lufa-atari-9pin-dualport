@@ -1,0 +1,13 @@
+Pin	Mouse/Trackball		Lightpen	Joystick	Paddle		Dir	Comment
+1	V-Pulse			n/c		/Forward	Button 3	<-
+2	H-Pulse			n/c		/Back		n/c		<-
+3	VQ-Pulse		n/c		/Left		Button 1	<-
+4	HQ-Pulse		n/c		/Right		Button 2	<-
+5	Button 3 (M)		Penpress	n/c		PotX		<->
+6	Button 1 (L)		/Beamtrigger	/Button 1	n/c		<->
+7	+5V			+5V		+5V		+5V		->	50mA max
+8	GND			GND		GND		GND		--
+9	Button 2 (R)		Button 2	Button 2	PotY		<->
+
+Pot: linear 470kOhm
+Dir: relative to host
