@@ -1,6 +1,6 @@
 <asf xmlversion="1.0">
-	<project caption="Joystick HID Device Demo (Class Driver APIs)" id="lufa.demos.device.class.joystick.example.avr8">
-		<require idref="lufa.demos.device.class.joystick"/>
+	<project caption="Joystick HID Device Demo (Low Level APIs)" id="lufa.demos.device.lowlevel.joystick.example.avr8">
+		<require idref="lufa.demos.device.lowlevel.joystick"/>
 		<require idref="lufa.boards.dummy.avr8"/>
 		<generator value="as5_8"/>
 
@@ -11,8 +11,8 @@
 		<build type="define" name="F_USB" value="16000000UL"/>
 	</project>
 
-	<project caption="Joystick HID Device Demo (Class Driver APIs)" id="lufa.demos.device.class.joystick.example.xmega">
-		<require idref="lufa.demos.device.class.joystick"/>
+	<project caption="Joystick HID Device Demo (Low Level APIs)" id="lufa.demos.device.lowlevel.joystick.example.xmega">
+		<require idref="lufa.demos.device.lowlevel.joystick"/>
 		<require idref="lufa.boards.dummy.xmega"/>
 		<generator value="as5_8"/>
 
@@ -23,15 +23,15 @@
 		<build type="define" name="F_USB" value="48000000UL"/>
 	</project>
 
-	<module type="application" id="lufa.demos.device.class.joystick" caption="Joystick HID Device Demo (Class Driver APIs)">
+	<module type="application" id="lufa.demos.device.lowlevel.joystick" caption="Joystick HID Device Demo (Low Level APIs)">
 		<info type="description" value="summary">
-		Joystick HID device demo, implementing a basic USB joystick that can send movement information to the host. This demo uses the user-friendly USB Class Driver APIs to provide a simple, abstracted interface into the USB stack.
+		Joystick HID device demo, implementing a basic USB joystick that can send movement information to the host. This demo uses the Low Level LUFA APIs to manually implement a USB Class for demonstration purposes without using the simpler in-built LUFA Class Driver APIs.
 		</info>
 
  		<info type="gui-flag" value="move-to-root"/>
 
 		<info type="keyword" value="Technology">
-			<keyword value="Class Driver APIs"/>
+			<keyword value="Low Level APIs"/>
 			<keyword value="USB Device"/>
 			<keyword value="HID Class"/>
 		</info>

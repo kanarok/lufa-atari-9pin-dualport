@@ -8,7 +8,7 @@
 # --------------------------------------
 #         LUFA Project Makefile.
 # --------------------------------------
-
+# modified by Sebastian
 # Run "make help" for target help.
 
 MCU          = atmega32u4
@@ -22,6 +22,9 @@ SRC          = $(TARGET).c Descriptors.c $(LUFA_SRC_USB) $(LUFA_SRC_USBCLASS)
 LUFA_PATH    = ./LUFA
 CC_FLAGS     = -DUSE_LUFA_CONFIG_HEADER -IConfig/
 LD_FLAGS     =
+
+#+
+PORT         = /dev/ttyACM0
 
 # Default target
 all:
@@ -41,3 +44,9 @@ include $(DMBS_PATH)/gcc.mk
 include $(DMBS_PATH)/hid.mk
 include $(DMBS_PATH)/avrdude.mk
 include $(DMBS_PATH)/atprogram.mk
+
+#+
+burn:
+	python reset-leonardo.py $(PORT)
+	sleep 1
+	avrdude -p$(MCU) -cavr109 -P$(PORT) -b57600 -D -Uflash:w:./Joystick.hex:i

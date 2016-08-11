@@ -50,8 +50,8 @@
  *  @{
  */
 
-#ifndef __BUTTONS_USBKEY_H__
-#define __BUTTONS_USBKEY_H__
+#ifndef __BUTTONS_LEONARDO_H__
+#define __BUTTONS_LEONARDO_H__
 
 	/* Includes: */
 		#include "LUFA/Common/Common.h"
@@ -66,29 +66,45 @@
 			#error Do not include this file directly. Include LUFA/Drivers/Board/Buttons.h instead.
 		#endif
 
+	/* Private Interface - For use in library only: */
+	#if !defined(__DOXYGEN__)
+		/* Macros: */
+			#define BUTTONS_CMASK                  (1 << 6)
+			#define BUTTONS_FMASK                 ((1 << 4) | (1 << 5))
+	#endif
+
 	/* Public Interface - May be used in end-application: */
 		/* Macros: */
 			/** Button mask for the first button on the board. */
-			#define BUTTONS_BUTTON1      (1 << 2)
+			#define BUTTONS_LEFT     (1 << 6) //pc6
+			#define BUTTONS_RIGHT	 (1 << 5) //pf5 
+			#define BUTTONS_MIDDLE   (1 << 4) //pf4
 
 		/* Inline Functions: */
 		#if !defined(__DOXYGEN__)
 			static inline void Buttons_Init(void)
 			{
-				DDRE  &= ~BUTTONS_BUTTON1;
-				PORTE |=  BUTTONS_BUTTON1;
+				DDRC  &= ~BUTTONS_CMASK;
+				DDRF  &= ~BUTTONS_FMASK;
+
+				PORTC |=  BUTTONS_CMASK;
+				PORTF |=  BUTTONS_FMASK;
 			}
 
 			static inline void Buttons_Disable(void)
 			{
-				DDRE  &= ~BUTTONS_BUTTON1;
-				PORTE &= ~BUTTONS_BUTTON1;
+				DDRC  &= ~BUTTONS_CMASK;
+				DDRF  &= ~BUTTONS_FMASK;
+
+				PORTC &= ~BUTTONS_CMASK;
+				PORTF &= ~BUTTONS_FMASK;
 			}
 
 			static inline uint8_t Buttons_GetStatus(void) ATTR_WARN_UNUSED_RESULT;
 			static inline uint8_t Buttons_GetStatus(void)
 			{
-				return ((PINE & BUTTONS_BUTTON1) ^ BUTTONS_BUTTON1);
+				//return ((PINE & BUTTONS_CMASK) ^ BUTTONS_CMASK);
+				return (((uint8_t)~PINC & BUTTONS_CMASK) | ((uint8_t)~PINF & BUTTONS_FMASK));
 			}
 		#endif
 
