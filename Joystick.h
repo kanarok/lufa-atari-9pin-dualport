@@ -29,74 +29,72 @@
 */
 
 /** \file
- *  \brief LUFA Custom Board Joystick Hardware Driver (Template)
  *
- *  This is a stub driver header file, for implementing custom board
- *  layout hardware with compatible LUFA board specific drivers. If
- *  the library is configured to use the BOARD_USER board mode, this
- *  driver file should be completed and copied into the "/Board/" folder
- *  inside the application's folder.
- *
- *  This stub is for the board-specific component of the LUFA Joystick
- *  driver, for a digital four-way (plus button) joystick.
-*/
+ *  Header file for Joystick.c.
+ */
 
-#ifndef __JOYSTICK_USER_H__
-#define __JOYSTICK_USER_H__
+#ifndef _JOYSTICK_H_
+#define _JOYSTICK_H_
 
 	/* Includes: */
-		// TODO: Add any required includes here
+		#include <avr/io.h>
+		#include <avr/wdt.h>
+		#include <avr/power.h>
+		#include <avr/interrupt.h>
+		#include <string.h>
 
-	/* Enable C linkage for C++ Compilers: */
-		#if defined(__cplusplus)
-			extern "C" {
-		#endif
+		#include "Descriptors.h"
 
-	/* Preprocessor Checks: */
-		#if !defined(__INCLUDE_FROM_JOYSTICK_H)
-			#error Do not include this file directly. Include LUFA/Drivers/Board/Joystick.h instead.
-		#endif
+		#include <LUFA/Drivers/Board/Joystick.h>
+		#include <LUFA/Drivers/Board/LEDs.h>
+		#include <LUFA/Drivers/Board/Buttons.h>
+		#include <LUFA/Drivers/USB/USB.h>
+		#include <LUFA/Platform/Platform.h>
 
-	/* Public Interface - May be used in end-application: */
-		/* Macros: */
-			/** Mask for the joystick being pushed in the left direction. */
-			#define JOY_LEFT                  // TODO: Add mask to indicate joystick left position here
+	/* Type Defines: */
+		/** Type define for the joystick HID report structure, for creating and sending HID reports to the host PC.
+		 *  This mirrors the layout described to the host in the HID report descriptor, in Descriptors.c.
+		 */
+		typedef struct
+		{
+			int8_t  X; /**< Current absolute joystick X position, as a signed 8-bit integer */
+			int8_t  Y; /**< Current absolute joystick Y position, as a signed 8-bit integer */
+			int8_t  Z; /**< Current absolute joystick Z position, as a signed 8-bit integer */
+			uint8_t Button; /**< Bit mask of the currently pressed joystick buttons */
+		} USB_JoystickReport_Data_t;
 
-			/** Mask for the joystick being pushed in the right direction. */
-			#define JOY_RIGHT                 // TODO: Add mask to indicate joystick right position here
+	/* Macros: */
+		/** LED mask for the library LED driver, to indicate that the USB interface is not ready. */
+		#define LEDMASK_USB_NOTREADY      LEDS_LED1
 
-			/** Mask for the joystick being pushed in the upward direction. */
-			#define JOY_UP                    // TODO: Add mask to indicate joystick up position here
+		/** LED mask for the library LED driver, to indicate that the USB interface is enumerating. */
+		#define LEDMASK_USB_ENUMERATING  (LEDS_LED2 | LEDS_LED3)
 
-			/** Mask for the joystick being pushed in the downward direction. */
-			#define JOY_DOWN                  // TODO: Add mask to indicate joystick down position here
+		/** LED mask for the library LED driver, to indicate that the USB interface is ready. */
+		#define LEDMASK_USB_READY        (LEDS_LED2 | LEDS_LED4)
 
-			/** Mask for the joystick being pushed inward. */
-			#define JOY_PRESS                 // TODO: Add mask to indicate joystick pressed position here
+		/** LED mask for the library LED driver, to indicate that an error has occurred in the USB interface. */
+		#define LEDMASK_USB_ERROR        (LEDS_LED1 | LEDS_LED3)
 
-		/* Inline Functions: */
-		#if !defined(__DOXYGEN__)
-			static inline void Joystick_Init(void)
-			{
-				// TODO: Initialize joystick port pins as inputs with pull-ups
-			}
+	/* Function Prototypes: */
+		void SetupHardware(void);
 
-			static inline void Joystick_Disable(void)
-			{
-				// TODO: Clear the joystick pins as high impedance inputs here
-			}
+		void EVENT_USB_Device_Connect(void);
+		void EVENT_USB_Device_Disconnect(void);
+		void EVENT_USB_Device_ConfigurationChanged(void);
+		void EVENT_USB_Device_ControlRequest(void);
+		void EVENT_USB_Device_StartOfFrame(void);
 
-			static inline uint8_t Joystick_GetStatus(void) ATTR_WARN_UNUSED_RESULT;
-			static inline uint8_t Joystick_GetStatus(void)
-			{
-				// TODO: Return current joystick position data which can be obtained by masking against the JOY_* macros
-			}
-		#endif
-
-	/* Disable C linkage for C++ Compilers: */
-		#if defined(__cplusplus)
-			}
-		#endif
+		bool CALLBACK_HID_Device_CreateHIDReport(USB_ClassInfo_HID_Device_t* const HIDInterfaceInfo,
+		                                         uint8_t* const ReportID,
+		                                         const uint8_t ReportType,
+		                                         void* ReportData,
+		                                         uint16_t* const ReportSize);
+		void CALLBACK_HID_Device_ProcessHIDReport(USB_ClassInfo_HID_Device_t* const HIDInterfaceInfo,
+		                                          const uint8_t ReportID,
+		                                          const uint8_t ReportType,
+		                                          const void* ReportData,
+		                                          const uint16_t ReportSize);
 
 #endif
 
