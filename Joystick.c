@@ -51,6 +51,7 @@ int main(void)
 		Joystick_HID_Task(JOYSTICK_EPADDR_PORT1);
 		Joystick_HID_Task(JOYSTICK_EPADDR_PORT2);
 		USB_USBTask();
+LEDs_TurnOnLEDs( ((1<<0)|(1<<4)|(1<<7)|(1<<5)) );
 	}
 }
 
