@@ -105,6 +105,9 @@
 
 			static inline void Joystick_Init_Port2(void)
 			{
+				DDRB  &= ~BUTTONS_START_PORT2;
+				PORTB |=  BUTTONS_START_PORT2;
+
 				DDRD  &= ~JOY_DMASK;
 				PORTD |=  JOY_DMASK;
 			}
@@ -117,6 +120,9 @@
 
 			static inline void Joystick_Disable_Port2(void)
 			{
+				DDRB  &= ~BUTTONS_START_PORT2;
+				PORTB &= ~BUTTONS_START_PORT2;
+
 				DDRD  &= ~JOY_DMASK;
 				PORTD &= ~JOY_DMASK;
 			}
@@ -125,14 +131,12 @@
 			static inline uint8_t Joystick_GetStatus_Port1(void)
 			{
 				return ((uint8_t)~PINB & JOY_BMASK);
-				
-				return ((uint8_t)~PIND & JOY_DMASK);
 			}
 
 			static inline uint8_t Joystick_GetStatus_Port2(void) ATTR_WARN_UNUSED_RESULT;
 			static inline uint8_t Joystick_GetStatus_Port2(void)
 			{
-				return ((uint8_t)~PIND & JOY_DMASK);
+				return ( ((uint8_t)~PIND & JOY_DMASK) | ((uint8_t)~PINB & BUTTONS_START_PORT2)  );
 			}
 
 		#endif
