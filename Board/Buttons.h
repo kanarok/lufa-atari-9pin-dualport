@@ -84,8 +84,8 @@
 			#define BUTTONS_MIDDLE_PORT1	(1 << 4) //pf4
 
 			#define BUTTONS_LEFT_PORT2	(1 << 6) //pe6
-			#define BUTTONS_RIGHT_PORT2	(1 << 5) //pf7 
-			#define BUTTONS_MIDDLE_PORT2	(1 << 4) //pf6
+			#define BUTTONS_RIGHT_PORT2	(1 << 7) //pf7 
+			#define BUTTONS_MIDDLE_PORT2	(1 << 6) //pf6
 			#define BUTTONS_FDELTA_PORT2	2
 
 		/* Inline Functions: */
@@ -137,7 +137,7 @@
 			static inline uint8_t Buttons_GetStatus_Port2(void)
 			{
 				//return ((PINE & BUTTONS_CMASK) ^ BUTTONS_CMASK);
-				return (((uint8_t)~PINE & BUTTONS_EMASK) | (((uint8_t)~PINF >> BUTTONS_FDELTA_PORT2) & BUTTONS_FMASK_PORT2));
+				return (((uint8_t)~PINE & BUTTONS_EMASK) | (((uint8_t)~PINF & BUTTONS_FMASK_PORT2) >> BUTTONS_FDELTA_PORT2));
 			}
 		#endif
 

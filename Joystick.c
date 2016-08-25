@@ -224,10 +224,10 @@ bool SecondPort_GetNextReport(USB_JoystickReport_Data_t* const ReportData)
 	if (ButtonStatus_LCL & BUTTONS_LEFT_PORT2)
 	  ReportData->Button |= (1 << 0);
 
-	if (ButtonStatus_LCL & BUTTONS_RIGHT_PORT2)
+	if (ButtonStatus_LCL & BUTTONS_RIGHT_PORT1)
 	  ReportData->Button |= (1 << 1);
 
-	if (ButtonStatus_LCL & BUTTONS_MIDDLE_PORT2)
+	if (ButtonStatus_LCL & BUTTONS_MIDDLE_PORT1)
 	  ReportData->Button |= (1 << 2);
 
 	if (JoyStatus_LCL & BUTTONS_START_PORT2)
