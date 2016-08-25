@@ -70,46 +70,71 @@
 	#if !defined(__DOXYGEN__)
 		/* Macros: */
 			#define JOY_BMASK                 ((1 << 1) | (1 << 2) | (1 << 3) | (1 << 4) | (1 << 5))
+			#define JOY_DMASK                 ((1 << 1) | (1 << 2) | (1 << 3) | (1 << 4) | (1 << 5))			
 	#endif
 
 	/* Public Interface - May be used in end-application: */
 		/* Macros: */
 			/** Mask for the joystick being pushed in the left direction. */
-			#define JOY_LEFT                  (1 << 4)
+			#define JOY_LEFT_PORT1                  (1 << 4)
+			#define JOY_LEFT_PORT2                  (1 << 4)
 
 			/** Mask for the joystick being pushed in the right direction. */
-			#define JOY_RIGHT                 (1 << 3)
+			#define JOY_RIGHT_PORT1                 (1 << 3)
+			#define JOY_RIGHT_PORT2                 (1 << 3)
 
 			/** Mask for the joystick being pushed in the upward direction. */
-			#define JOY_UP                    (1 << 1)
+			#define JOY_UP_PORT1                    (1 << 1)
+			#define JOY_UP_PORT2                    (1 << 1)
 
 			/** Mask for the joystick being pushed in the downward direction. */
-			#define JOY_DOWN                  (1 << 2)
+			#define JOY_DOWN_PORT1                  (1 << 2)
+			#define JOY_DOWN_PORT2                  (1 << 2)
 
 			/* Mask for extra Start Button */
-			#define BUTTONS_START	          (1 << 5)
+			#define BUTTONS_START_PORT1       (1 << 5)
+			#define BUTTONS_START_PORT2       (1 << 6)
 
 		/* Inline Functions: */
 		#if !defined(__DOXYGEN__)
-			static inline void Joystick_Init(void)
+			static inline void Joystick_Init_Port1(void)
 			{
 				DDRB  &= ~JOY_BMASK;
-
 				PORTB |=  JOY_BMASK;
 			}
 
-			static inline void Joystick_Disable(void)
+			static inline void Joystick_Init_Port2(void)
+			{
+				DDRD  &= ~JOY_DMASK;
+				PORTD |=  JOY_DMASK;
+			}
+
+			static inline void Joystick_Disable_Port1(void)
 			{
 				DDRB  &= ~JOY_BMASK;
-
 				PORTB &= ~JOY_BMASK;
 			}
 
-			static inline uint8_t Joystick_GetStatus(void) ATTR_WARN_UNUSED_RESULT;
-			static inline uint8_t Joystick_GetStatus(void)
+			static inline void Joystick_Disable_Port2(void)
+			{
+				DDRD  &= ~JOY_DMASK;
+				PORTD &= ~JOY_DMASK;
+			}
+
+			static inline uint8_t Joystick_GetStatus_Port1(void) ATTR_WARN_UNUSED_RESULT;
+			static inline uint8_t Joystick_GetStatus_Port1(void)
 			{
 				return ((uint8_t)~PINB & JOY_BMASK);
+				
+				return ((uint8_t)~PIND & JOY_DMASK);
 			}
+
+			static inline uint8_t Joystick_GetStatus_Port2(void) ATTR_WARN_UNUSED_RESULT;
+			static inline uint8_t Joystick_GetStatus_Port2(void)
+			{
+				return ((uint8_t)~PIND & JOY_DMASK);
+			}
+
 		#endif
 
 	/* Disable C linkage for C++ Compilers: */

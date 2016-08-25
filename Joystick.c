@@ -48,7 +48,8 @@ int main(void)
 
 	for (;;)
 	{
-		HID_Task();
+		Joystick_HID_Task(JOYSTICK_EPADDR_PORT1);
+		Joystick_HID_Task(JOYSTICK_EPADDR_PORT2);
 		USB_USBTask();
 	}
 }
@@ -76,9 +77,11 @@ void SetupHardware(void)
 #endif
 
 	/* Hardware Initialization */
-	Joystick_Init();
+	Joystick_Init_Port1();
+	Joystick_Init_Port2();
 	LEDs_Init();
-	Buttons_Init();
+	Buttons_Init_Port1();
+	Buttons_Init_Port2();
 	USB_Init();
 }
 
@@ -109,6 +112,7 @@ void EVENT_USB_Device_ConfigurationChanged(void)
 
 	/* Setup HID Report Endpoint */
 	ConfigSuccess &= Endpoint_ConfigureEndpoint(JOYSTICK_EPADDR_PORT1, EP_TYPE_INTERRUPT, JOYSTICK_EPSIZE, 1);
+	ConfigSuccess &= Endpoint_ConfigureEndpoint(JOYSTICK_EPADDR_PORT2, EP_TYPE_INTERRUPT, JOYSTICK_EPSIZE, 1);
 
 	/* Indicate endpoint configuration success or failure */
 	LEDs_SetAllLEDs(ConfigSuccess ? LEDMASK_USB_READY : LEDMASK_USB_ERROR);
@@ -128,8 +132,11 @@ void EVENT_USB_Device_ControlRequest(void)
 			{
 				USB_JoystickReport_Data_t JoystickReportData;
 
-				/* Create the next HID report to send to the host */
-				GetNextReport(&JoystickReportData);
+				/* Determine Port and create the next HID report to send to the host */
+				if (!(USB_ControlRequest.wIndex))
+					FirstPort_GetNextReport(&JoystickReportData);
+				else
+					SecondPort_GetNextReport(&JoystickReportData);
 
 				Endpoint_ClearSETUP();
 
@@ -148,38 +155,83 @@ void EVENT_USB_Device_ControlRequest(void)
  *
  *  \return Boolean \c true if the new report differs from the last report, \c false otherwise
  */
-bool GetNextReport(USB_JoystickReport_Data_t* const ReportData)
+bool FirstPort_GetNextReport(USB_JoystickReport_Data_t* const ReportData)
 {
 	static uint8_t PrevJoyStatus    = 0;
 	static uint8_t PrevButtonStatus = 0;
-	uint8_t        JoyStatus_LCL    = Joystick_GetStatus();
-	uint8_t        ButtonStatus_LCL = Buttons_GetStatus();
+	uint8_t        JoyStatus_LCL    = Joystick_GetStatus_Port1();
+	uint8_t        ButtonStatus_LCL = Buttons_GetStatus_Port1();
 	bool           InputChanged     = false;
 
 	/* Clear the report contents */
 	memset(ReportData, 0, sizeof(USB_JoystickReport_Data_t));
 
-	if (JoyStatus_LCL & JOY_UP)
+	if (JoyStatus_LCL & JOY_UP_PORT1)
 	  ReportData->Y = -100;
-	else if (JoyStatus_LCL & JOY_DOWN)
+	else if (JoyStatus_LCL & JOY_DOWN_PORT1)
 	  ReportData->Y =  100;
 
-	if (JoyStatus_LCL & JOY_LEFT)
+	if (JoyStatus_LCL & JOY_LEFT_PORT1)
 	  ReportData->X = -100;
-	else if (JoyStatus_LCL & JOY_RIGHT)
+	else if (JoyStatus_LCL & JOY_RIGHT_PORT1)
 	  ReportData->X =  100;
 
-	if (ButtonStatus_LCL & BUTTONS_LEFT)
+	if (ButtonStatus_LCL & BUTTONS_LEFT_PORT1)
 	  ReportData->Button |= (1 << 0);
 
-	if (ButtonStatus_LCL & BUTTONS_RIGHT)
+	if (ButtonStatus_LCL & BUTTONS_RIGHT_PORT1)
 	  ReportData->Button |= (1 << 1);
 
-	if (ButtonStatus_LCL & BUTTONS_MIDDLE)
+	if (ButtonStatus_LCL & BUTTONS_MIDDLE_PORT1)
 	  ReportData->Button |= (1 << 2);
 
-	if (JoyStatus_LCL & BUTTONS_START)
+	if (JoyStatus_LCL & BUTTONS_START_PORT1)
 	  ReportData->Button |= (1 << 3);
+			
+
+	/* Check if the new report is different to the previous report */
+	InputChanged = (uint8_t)(PrevJoyStatus ^ JoyStatus_LCL) | (uint8_t)(PrevButtonStatus ^ ButtonStatus_LCL);
+
+	/* Save the current joystick status for later comparison */
+	PrevJoyStatus    = JoyStatus_LCL;
+	PrevButtonStatus = ButtonStatus_LCL;
+
+	/* Return whether the new report is different to the previous report or not */
+	return InputChanged;
+}
+
+bool SecondPort_GetNextReport(USB_JoystickReport_Data_t* const ReportData)
+{
+	static uint8_t PrevJoyStatus    = 0;
+	static uint8_t PrevButtonStatus = 0;
+	uint8_t        JoyStatus_LCL    = Joystick_GetStatus_Port2();
+	uint8_t        ButtonStatus_LCL = Buttons_GetStatus_Port2();
+	bool           InputChanged     = false;
+
+	/* Clear the report contents */
+	memset(ReportData, 0, sizeof(USB_JoystickReport_Data_t));
+
+	if (JoyStatus_LCL & JOY_UP_PORT2)
+	  ReportData->Y = -100;
+	else if (JoyStatus_LCL & JOY_DOWN_PORT2)
+	  ReportData->Y =  100;
+
+	if (JoyStatus_LCL & JOY_LEFT_PORT2)
+	  ReportData->X = -100;
+	else if (JoyStatus_LCL & JOY_RIGHT_PORT2)
+	  ReportData->X =  100;
+
+	if (ButtonStatus_LCL & BUTTONS_LEFT_PORT2)
+	  ReportData->Button |= (1 << 0);
+
+	if (ButtonStatus_LCL & BUTTONS_RIGHT_PORT2)
+	  ReportData->Button |= (1 << 1);
+
+	if (ButtonStatus_LCL & BUTTONS_MIDDLE_PORT2)
+	  ReportData->Button |= (1 << 2);
+
+	if (JoyStatus_LCL & BUTTONS_START_PORT2)
+ 	  ReportData->Button |= (1 << 3);
 
 	/* Check if the new report is different to the previous report */
 	InputChanged = (uint8_t)(PrevJoyStatus ^ JoyStatus_LCL) | (uint8_t)(PrevButtonStatus ^ ButtonStatus_LCL);
@@ -193,14 +245,14 @@ bool GetNextReport(USB_JoystickReport_Data_t* const ReportData)
 }
 
 /** Function to manage HID report generation and transmission to the host. */
-void HID_Task(void)
+void Joystick_HID_Task(uint8_t EpAddr)
 {
 	/* Device must be connected and configured for the task to run */
 	if (USB_DeviceState != DEVICE_STATE_Configured)
 	  return;
 
 	/* Select the Joystick Report Endpoint */
-	Endpoint_SelectEndpoint(JOYSTICK_EPADDR_PORT1);
+	Endpoint_SelectEndpoint(EpAddr);
 
 	/* Check to see if the host is ready for another packet */
 	if (Endpoint_IsINReady())
@@ -208,7 +260,15 @@ void HID_Task(void)
 		USB_JoystickReport_Data_t JoystickReportData;
 
 		/* Create the next HID report to send to the host */
-		GetNextReport(&JoystickReportData);
+		switch (EpAddr)
+		{
+			case JOYSTICK_EPADDR_PORT1:
+				FirstPort_GetNextReport(&JoystickReportData);
+				break;
+			case JOYSTICK_EPADDR_PORT2:
+				SecondPort_GetNextReport(&JoystickReportData);
+				break;
+		}
 
 		/* Write Joystick Report Data */
 		Endpoint_Write_Stream_LE(&JoystickReportData, sizeof(JoystickReportData), NULL);
@@ -220,4 +280,3 @@ void HID_Task(void)
 		memset(&JoystickReportData, 0, sizeof(JoystickReportData));
 	}
 }
-

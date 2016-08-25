@@ -52,7 +52,6 @@ const USB_Descriptor_HIDReport_Datatype_t PROGMEM JoystickReport[] =
 		HID_RI_COLLECTION(8, 0x00), /* Physical */
 			HID_RI_USAGE(8, 0x30), /* Usage X */
 			HID_RI_USAGE(8, 0x31), /* Usage Y */
-		//	HID_RI_USAGE(8, 0x32), /* Usage Z */
 			HID_RI_LOGICAL_MINIMUM(8, -100),
 			HID_RI_LOGICAL_MAXIMUM(8, 100),
 			HID_RI_PHYSICAL_MINIMUM(8, -1),
@@ -124,11 +123,11 @@ const USB_Descriptor_Configuration_t PROGMEM ConfigurationDescriptor =
 			.MaxPowerConsumption    = USB_CONFIG_POWER_MA(100)
 		},
 
-	.HID_Interface =
+	.HID1_Interface =
 		{
 			.Header                 = {.Size = sizeof(USB_Descriptor_Interface_t), .Type = DTYPE_Interface},
 
-			.InterfaceNumber        = INTERFACE_ID_Joystick,
+			.InterfaceNumber        = INTERFACE_ID_Joystick_Port1,
 			.AlternateSetting       = 0x00,
 
 			.TotalEndpoints         = 2,
@@ -140,7 +139,7 @@ const USB_Descriptor_Configuration_t PROGMEM ConfigurationDescriptor =
 			.InterfaceStrIndex      = NO_DESCRIPTOR
 		},
 
-	.HID_JoystickHID =
+	.HID1_JoystickHID =
 		{
 			.Header                 = {.Size = sizeof(USB_HID_Descriptor_HID_t), .Type = HID_DTYPE_HID},
 
@@ -151,7 +150,7 @@ const USB_Descriptor_Configuration_t PROGMEM ConfigurationDescriptor =
 			.HIDReportLength        = sizeof(JoystickReport)
 		},
 
-	.HID_ReportINEndpoint_Port1 =
+	.HID1_ReportINEndpoint =
 		{
 			.Header                 = {.Size = sizeof(USB_Descriptor_Endpoint_t), .Type = DTYPE_Endpoint},
 
@@ -161,7 +160,35 @@ const USB_Descriptor_Configuration_t PROGMEM ConfigurationDescriptor =
 			.PollingIntervalMS      = 0x01
 		},
 
-	.HID_ReportINEndpoint_Port2 =
+
+	.HID2_Interface =
+		{
+			.Header                 = {.Size = sizeof(USB_Descriptor_Interface_t), .Type = DTYPE_Interface},
+
+			.InterfaceNumber        = INTERFACE_ID_Joystick_Port2,
+			.AlternateSetting       = 0x00,
+
+			.TotalEndpoints         = 2,
+
+			.Class                  = HID_CSCP_HIDClass,
+			.SubClass               = HID_CSCP_NonBootSubclass,
+			.Protocol               = HID_CSCP_NonBootProtocol,
+
+			.InterfaceStrIndex      = NO_DESCRIPTOR
+		},
+
+	.HID2_JoystickHID =
+		{
+			.Header                 = {.Size = sizeof(USB_HID_Descriptor_HID_t), .Type = HID_DTYPE_HID},
+
+			.HIDSpec                = VERSION_BCD(1,1,1),
+			.CountryCode            = 0x00,
+			.TotalReportDescriptors = 1,
+			.HIDReportType          = HID_DTYPE_Report,
+			.HIDReportLength        = sizeof(JoystickReport)
+		},
+
+	.HID2_ReportINEndpoint =
 		{
 			.Header                 = {.Size = sizeof(USB_Descriptor_Endpoint_t), .Type = DTYPE_Endpoint},
 
@@ -234,11 +261,20 @@ uint16_t CALLBACK_USB_GetDescriptor(const uint16_t wValue,
 			}
 
 			break;
-		case DTYPE_HID:
-			Address = &ConfigurationDescriptor.HID_JoystickHID;
-			Size    = sizeof(USB_HID_Descriptor_HID_t);
+		case HID_DTYPE_HID:
+			switch (wIndex)
+			{
+				case (INTERFACE_ID_Joystick_Port1):
+					Address = &ConfigurationDescriptor.HID1_JoystickHID;
+					Size    = sizeof(USB_HID_Descriptor_HID_t);
+					break;
+				case (INTERFACE_ID_Joystick_Port2):
+					Address = &ConfigurationDescriptor.HID2_JoystickHID;
+					Size    = sizeof(USB_HID_Descriptor_HID_t);
+					break;
+			}
 			break;
-		case DTYPE_Report:
+		case HID_DTYPE_Report:
 			Address = &JoystickReport;
 			Size    = sizeof(JoystickReport);
 			break;

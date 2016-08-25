@@ -50,11 +50,15 @@
 		{
 			USB_Descriptor_Configuration_Header_t Config;
 
-			// Joystick HID Interface
-			USB_Descriptor_Interface_t            HID_Interface;
-			USB_HID_Descriptor_HID_t              HID_JoystickHID;
-			USB_Descriptor_Endpoint_t             HID_ReportINEndpoint_Port1;
-			USB_Descriptor_Endpoint_t             HID_ReportINEndpoint_Port2;
+			// Port 1 Joystick HID Interface
+			USB_Descriptor_Interface_t            HID1_Interface;
+			USB_HID_Descriptor_HID_t              HID1_JoystickHID;
+			USB_Descriptor_Endpoint_t             HID1_ReportINEndpoint;
+
+			// Port 2 Joystick HID Interface
+			USB_Descriptor_Interface_t            HID2_Interface;
+			USB_HID_Descriptor_HID_t              HID2_JoystickHID;
+			USB_Descriptor_Endpoint_t             HID2_ReportINEndpoint;
 		} USB_Descriptor_Configuration_t;
 
 		/** Enum for the device interface descriptor IDs within the device. Each interface descriptor
@@ -63,7 +67,8 @@
 		 */
 		enum InterfaceDescriptors_t
 		{
-			INTERFACE_ID_Joystick = 0, /**< Joystick interface descriptor ID */
+			INTERFACE_ID_Joystick_Port1 = 0, /**< Joystick interface descriptor ID */
+			INTERFACE_ID_Joystick_Port2 = 1, /**< Joystick interface descriptor ID */
 		};
 
 		/** Enum for the device string descriptor IDs within the device. Each string descriptor should

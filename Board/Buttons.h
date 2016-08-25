@@ -70,41 +70,73 @@
 	#if !defined(__DOXYGEN__)
 		/* Macros: */
 			#define BUTTONS_CMASK                  (1 << 6)
-			#define BUTTONS_FMASK                 ((1 << 4) | (1 << 5))
+			#define BUTTONS_FMASK_PORT1            ((1 << 4) | (1 << 5))
+
+			#define BUTTONS_EMASK                  (1 << 6)
+			#define BUTTONS_FMASK_PORT2            ((1 << 6) | (1 << 7))
 	#endif
 
 	/* Public Interface - May be used in end-application: */
 		/* Macros: */
 			/** Button mask for the first button on the board. */
-			#define BUTTONS_LEFT     (1 << 6) //pc6
-			#define BUTTONS_RIGHT	 (1 << 5) //pf5 
-			#define BUTTONS_MIDDLE   (1 << 4) //pf4
+			#define BUTTONS_LEFT_PORT1	(1 << 6) //pc6
+			#define BUTTONS_RIGHT_PORT1	(1 << 5) //pf5 
+			#define BUTTONS_MIDDLE_PORT1	(1 << 4) //pf4
+
+			#define BUTTONS_LEFT_PORT2	(1 << 6) //pe6
+			#define BUTTONS_RIGHT_PORT2	(1 << 7) //pf7 
+			#define BUTTONS_MIDDLE_PORT2	(1 << 6) //pf6
 
 		/* Inline Functions: */
 		#if !defined(__DOXYGEN__)
-			static inline void Buttons_Init(void)
+			static inline void Buttons_Init_Port1(void)
 			{
 				DDRC  &= ~BUTTONS_CMASK;
-				DDRF  &= ~BUTTONS_FMASK;
+				DDRF  &= ~BUTTONS_FMASK_PORT1;
 
 				PORTC |=  BUTTONS_CMASK;
-				PORTF |=  BUTTONS_FMASK;
+				PORTF |=  BUTTONS_FMASK_PORT1;
 			}
 
-			static inline void Buttons_Disable(void)
+			static inline void Buttons_Init_Port2(void)
+			{
+				DDRE  &= ~BUTTONS_EMASK;
+				DDRF  &= ~BUTTONS_FMASK_PORT2;
+
+				PORTE |=  BUTTONS_EMASK;
+				PORTF |=  BUTTONS_FMASK_PORT2;
+			}
+
+			static inline void Buttons_Disable_Port1(void)
 			{
 				DDRC  &= ~BUTTONS_CMASK;
-				DDRF  &= ~BUTTONS_FMASK;
+				DDRF  &= ~BUTTONS_FMASK_PORT1;
 
 				PORTC &= ~BUTTONS_CMASK;
-				PORTF &= ~BUTTONS_FMASK;
+				PORTF &= ~BUTTONS_FMASK_PORT1;
 			}
 
-			static inline uint8_t Buttons_GetStatus(void) ATTR_WARN_UNUSED_RESULT;
-			static inline uint8_t Buttons_GetStatus(void)
+			static inline void Buttons_Disable_Port2(void)
+			{
+				DDRE  &= ~BUTTONS_EMASK;
+				DDRF  &= ~BUTTONS_FMASK_PORT2;
+
+				PORTE &= ~BUTTONS_EMASK;
+				PORTF &= ~BUTTONS_FMASK_PORT2;
+			}
+
+			static inline uint8_t Buttons_GetStatus_Port1(void) ATTR_WARN_UNUSED_RESULT;
+			static inline uint8_t Buttons_GetStatus_Port1(void)
 			{
 				//return ((PINE & BUTTONS_CMASK) ^ BUTTONS_CMASK);
-				return (((uint8_t)~PINC & BUTTONS_CMASK) | ((uint8_t)~PINF & BUTTONS_FMASK));
+				return (((uint8_t)~PINC & BUTTONS_CMASK) | ((uint8_t)~PINF & BUTTONS_FMASK_PORT1));
+			}
+
+			static inline uint8_t Buttons_GetStatus_Port2(void) ATTR_WARN_UNUSED_RESULT;
+			static inline uint8_t Buttons_GetStatus_Port2(void)
+			{
+				//return ((PINE & BUTTONS_CMASK) ^ BUTTONS_CMASK);
+				return (((uint8_t)~PINE & BUTTONS_EMASK) | ((uint8_t)~PINF & BUTTONS_FMASK_PORT2));
 			}
 		#endif
 

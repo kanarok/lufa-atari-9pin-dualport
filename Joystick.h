@@ -77,14 +77,15 @@
 
 	/* Function Prototypes: */
 		void SetupHardware(void);
-		void HID_Task(void);
+		void Joystick_HID_Task(uint8_t);
 
 		void EVENT_USB_Device_Connect(void);
 		void EVENT_USB_Device_Disconnect(void);
 		void EVENT_USB_Device_ConfigurationChanged(void);
 		void EVENT_USB_Device_ControlRequest(void);
-
-		bool GetNextReport(USB_JoystickReport_Data_t* const ReportData);
+		//needed? void EVENT_USB_Device_StartOfFrame(void);
+		bool FirstPort_GetNextReport(USB_JoystickReport_Data_t* const ReportData);
+		bool SecondPort_GetNextReport(USB_JoystickReport_Data_t* const ReportData);
 
 #endif
 
