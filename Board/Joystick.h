@@ -76,12 +76,12 @@
 	/* Public Interface - May be used in end-application: */
 		/* Macros: */
 			/** Mask for the joystick being pushed in the left direction. */
-			#define JOY_LEFT_PORT1                  (1 << 4)
-			#define JOY_LEFT_PORT2                  (1 << 4)
+			#define JOY_LEFT_PORT1                  (1 << 3)
+			#define JOY_LEFT_PORT2                  (1 << 3)
 
 			/** Mask for the joystick being pushed in the right direction. */
-			#define JOY_RIGHT_PORT1                 (1 << 3)
-			#define JOY_RIGHT_PORT2                 (1 << 3)
+			#define JOY_RIGHT_PORT1                 (1 << 4)
+			#define JOY_RIGHT_PORT2                 (1 << 4)
 
 			/** Mask for the joystick being pushed in the upward direction. */
 			#define JOY_UP_PORT1                    (1 << 1)

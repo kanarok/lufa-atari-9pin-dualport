@@ -73,14 +73,16 @@
 		/* Macros: */ //pb0 pd5
 			#define LEDS_PORTD_INT       (LEDS_TX)
 			#define LEDS_PORTD_FRONT     (LEDS_PORT1|LEDS_PORT2)
-			#define LEDS_PORTB_INT	     (LEDS_RX)
+			#define LEDS_PORTB_INT	     (LED_iRX)
 			#define RX_DELTA	     4
 	#endif
 
 	/* Public Interface - May be used in end-application: */
 		/* Macros: */
-			/** LED mask for the first LED on the board. */
-			#define LEDS_RX        (1 << 0)
+			/** private LED mask for the first LED on the board. */
+			#define LED_iRX        (1 << 0)
+			/** public **/
+			#define LEDS_RX	       (1 << 4)
 
 			/** LED mask for the second LED on the board. */
 			#define LEDS_TX        (1 << 5)
@@ -92,7 +94,7 @@
 			#define LEDS_PORT2        (1 << 7)
 
 			/** LED mask for all the LEDs on the board. */
-			#define LEDS_ALL_LEDS    (LEDS_RX >> RX_DELTA | LEDS_TX | LEDS_PORT1 | LEDS_PORT2 )
+			#define LEDS_ALL_LEDS    (LED_iRX >> RX_DELTA | LEDS_TX | LEDS_PORT1 | LEDS_PORT2 )
 
 			/** LED mask for none of the board LEDs. */
 			#define LEDS_NO_LEDS     0
@@ -131,22 +133,22 @@
 			}
 
 			static inline void LEDs_SetAllLEDs(const uint8_t LEDMask)
-			{
+			{/** untested **/
 				PORTB = ((PORTB |  LEDS_PORTB_INT) & ~(LEDMask & LEDS_PORTB_INT));
 				PORTD = ((PORTD |  LEDS_PORTD_INT) & ~(LEDMask & LEDS_PORTD_INT));
-				//PORTC = ((PORTC & ~LEDS_PORTC_LEDS) |  (LEDMask & LEDS_PORTC_LEDS));
+				PORTD = ((PORTD & ~LEDS_PORTD_FRONT) |  (LEDMask & LEDS_PORTD_FRONT));
 			}
 
 			static inline void LEDs_ChangeLEDs(const uint8_t LEDMask,
 			                                   const uint8_t ActiveMask)
-			{
+			{/** incomplete **/
 				PORTB = ((PORTB |  (LEDMask & LEDS_PORTB_INT)) & ~(ActiveMask & LEDS_PORTB_INT));
 				PORTD = ((PORTD |  (LEDMask & LEDS_PORTD_INT)) & ~(ActiveMask & LEDS_PORTD_INT));
 				//PORTC = ((PORTC & ~(LEDMask & LEDS_PORTC_LEDS)) |  (ActiveMask & LEDS_PORTC_LEDS));
 			}
 
 			static inline void LEDs_ToggleLEDs(const uint8_t LEDMask)
-			{
+			{/** incomplete **/
 				PINB  = (LEDMask & LEDS_PORTB_INT);
 				PIND  = (LEDMask & LEDS_PORTD_INT);
 				//PINC  = (LEDMask & LEDS_PORTC_LEDS);
@@ -154,7 +156,7 @@
 
 			static inline uint8_t LEDs_GetLEDs(void) ATTR_WARN_UNUSED_RESULT;
 			static inline uint8_t LEDs_GetLEDs(void)
-			{
+			{/** incomplete **/
 				return ((~PORTB & LEDS_PORTB_INT) | (~PORTD & LEDS_PORTD_INT));
 			}
 		#endif

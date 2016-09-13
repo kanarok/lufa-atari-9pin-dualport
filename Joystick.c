@@ -51,7 +51,7 @@ int main(void)
 		Joystick_HID_Task(JOYSTICK_EPADDR_PORT1);
 		Joystick_HID_Task(JOYSTICK_EPADDR_PORT2);
 		USB_USBTask();
-LEDs_TurnOnLEDs( ((1<<0)|(1<<4)|(1<<7)|(1<<5)) );
+		LEDs_TurnOnLEDs(LEDS_PORT1|LEDS_PORT2);
 	}
 }
 
@@ -92,7 +92,7 @@ void SetupHardware(void)
 void EVENT_USB_Device_Connect(void)
 {
 	/* Indicate USB enumerating */
-	LEDs_SetAllLEDs(LEDMASK_USB_ENUMERATING);
+	//LEDs_SetAllLEDs(LEDMASK_USB_ENUMERATING);
 }
 
 /** Event handler for the USB_Disconnect event. This indicates that the device is no longer connected to a host via
@@ -101,7 +101,7 @@ void EVENT_USB_Device_Connect(void)
 void EVENT_USB_Device_Disconnect(void)
 {
 	/* Indicate USB not ready */
-	LEDs_SetAllLEDs(LEDMASK_USB_NOTREADY);
+	//LEDs_SetAllLEDs(LEDMASK_USB_NOTREADY);
 }
 
 /** Event handler for the USB_ConfigurationChanged event. This is fired when the host set the current configuration
@@ -116,7 +116,7 @@ void EVENT_USB_Device_ConfigurationChanged(void)
 	ConfigSuccess &= Endpoint_ConfigureEndpoint(JOYSTICK_EPADDR_PORT2, EP_TYPE_INTERRUPT, JOYSTICK_EPSIZE, 1);
 
 	/* Indicate endpoint configuration success or failure */
-	LEDs_SetAllLEDs(ConfigSuccess ? LEDMASK_USB_READY : LEDMASK_USB_ERROR);
+	//LEDs_SetAllLEDs(ConfigSuccess ? LEDMASK_USB_READY : LEDMASK_USB_ERROR);
 }
 
 /** Event handler for the USB_ControlRequest event. This is used to catch and process control requests sent to
@@ -188,7 +188,6 @@ bool FirstPort_GetNextReport(USB_JoystickReport_Data_t* const ReportData)
 
 	if (JoyStatus_LCL & BUTTONS_START_PORT1)
 	  ReportData->Button |= (1 << 3);
-			
 
 	/* Check if the new report is different to the previous report */
 	InputChanged = (uint8_t)(PrevJoyStatus ^ JoyStatus_LCL) | (uint8_t)(PrevButtonStatus ^ ButtonStatus_LCL);
